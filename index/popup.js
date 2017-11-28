@@ -27,5 +27,5 @@ function checkTextbox(){
 };
 function listToBackground(){
   chrome.extension.sendMessage(ticketList,function(response) {});
-  console.log("sent ticketList to background script")
+  console.log("sent ticketList to background script");
 }

@@ -16,7 +16,13 @@
     "scripts": ["background.js"],
     "persistent": true
   },
+  "content_scripts": [
+    {
+      "matches": ["https://www.repairwatch.com/admin/view-client-shipments.php?autobatch"],
 
+      "js": ["batch.js"]
+    }
+  ],
   "permissions": [
     "tabs",
     "storage",
