@@ -1,9 +1,20 @@
 let ticketList = [];
-
+let counter = 0
+let claimList = [];
 chrome.extension.onMessage.addListener(function(msg, sender, sendResponse) {
-  console.log("Recived a message");
-  if (msg == "need list") {
-    sendResponse(ticketList);
+  console.log("Recived a message that says",msg);
+  if (msg == "need Ticket") {
+    sendResponse(ticketList[counter]);
+    console.log(ticketList[counter]);
+    counter++;
+  }
+  else if (msg.includes("claim")) {
+    claimList.push(msg.substr(5));
+    console.log("claimList ",claimList);
+  }
+  else if (msg == "need list") {
+    sendResponse(claimList);
+    console.log("sent off claimList:",claimList)
   }
   else {
     //temp unity searchRepair is done
@@ -11,22 +22,28 @@ chrome.extension.onMessage.addListener(function(msg, sender, sendResponse) {
     sendResponse();
     searchRepair(msg);
     newwin = false;
+    i = 0;
   }
 
 
 });
 
 function searchRepair(msg){
-  //need a loop to search every ticket num from the msg.
-  //chrome.tabs.create({url: "https://techdefenders.repairq.io/"});
-  //temp add stuff to get data
-  //let d = document.getElementsByClassName('block-content');
-  //let info = d[1].getElementsByClassName('pull-right');
-  //let provider = info[0];
-  //let claimNum = info[1];
-  //let serialNum = info[2];
 
-  batch()
+  let win = chrome.tabs.create({url: "https://techdefenders.repairq.io/"});
+  for (let i = 0; i < msg.length; i++) {
+    let link = "https://techdefenders.repairq.io/view/" + msg[i];
+    chrome.tabs.update(win,{url: link});
+    chrome.tabs.executeScript(win,{file: 'TicketToClaim.js'});
+    console.log("ran TTC");
+  }
+
+
+
+
+  console.log("batching")
+  batch();
+
 }
 let newwin = false;
 chrome.tabs.onUpdated.addListener(function(tabId,changeInfo,tab){
@@ -35,24 +52,21 @@ chrome.tabs.onUpdated.addListener(function(tabId,changeInfo,tab){
   }
   else if(tab.url.indexOf("https://www.repairwatch.com/admin/view-accounts.php?msg=") > -1 &&
       changeInfo.url === undefined){
-    chrome.tabs.create({url: "https://www.repairwatch.com/admin/view-client-shipments.php?autobatch"});
+    let win = chrome.tabs.create({url: "https://www.repairwatch.com/admin/view-client-shipments.php?autobatch"});
     newwin = true;
+    chrome.tabs.executeScript(win,{file: 'batch.js'});
+    console.log("background sent a message to batch.js");
+//chrome.extension.sendMessage(ticketList,function(response) {});
 
   }
 });
 
 
 function batch(){
-  chrome.tabs.onCreated.addListener(function(tab){
-      console.log("new tab "+tab.id);
 
-  });
-  console.log("background sent a message to batch.js");
   let win = chrome.tabs.create({url: "https://www.repairwatch.com/admin/view-accounts.php"});
   alert("pick an account");
 
-  //chrome.tabs.executeScript(win,{file: 'batch.js'});
-  chrome.extension.sendMessage(ticketList,function(response) {});
 
 
   //chrome.tabs.update({url:"https://www.repairwatch.com/admin/view-client-shipments.php"})

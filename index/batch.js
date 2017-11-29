@@ -1,5 +1,5 @@
 
-console.log("batch ran");
+console.log("batch.js ran");
 chrome.extension.sendMessage("need list",function(response) {
 
   makeShipment(response);
@@ -9,24 +9,25 @@ chrome.extension.sendMessage("need list",function(response) {
 
 
 function makeShipment(response){
-  let ticketList = response;
+  let claimList = response;
   let cb = document.getElementsByClassName('ckbx_ship');
   console.log("batching", cb);
 
-  for (var i = 0; i < ticketList.length; i++) {
+  for (var i = 0; i < claimList.length; i++) {
     let batched = false;
     for (var a = 0; a < cb.length; a++) {
-      if (cb[a].value == ticketList[i]) {
+      if (cb[a].value == claimList[i]) {
         console.log("batching", cb[a].value);
         batched = true;
         cb[a].click();
       }
+
     }
-    if (batched = false) {
-      alert(ticketList[i]," was not batched");
+    if (batched == false) {
+      alert("The claim ", claimList[i]," was not batched");
     }
   }
 
-  document.getElementById('submitBatch').click();
+  //document.getElementById('submitBatch').click();
 
 }
