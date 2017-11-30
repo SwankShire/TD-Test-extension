@@ -14,7 +14,8 @@ chrome.extension.onMessage.addListener(function(msg, sender, sendResponse) {
   }
   else if (msg == "need list") {
     sendResponse(claimList);
-    console.log("sent off claimList:",claimList)
+    console.log("sent off claimList:",claimList);
+    claimList = [];
   }
   else {
     //temp unity searchRepair is done
@@ -30,10 +31,11 @@ chrome.extension.onMessage.addListener(function(msg, sender, sendResponse) {
 
 function searchRepair(msg){
 
-  let win = chrome.tabs.create({url: "https://techdefenders.repairq.io/"});
-  for (let i = 0; i < msg.length; i++) {
-    let link = "https://techdefenders.repairq.io/view/" + msg[i];
-    chrome.tabs.update(win,{url: link});
+
+  for (var b = 0; b < msg.length; b++) {
+    let win = chrome.tabs.create({url: "https://techdefenders.repairq.io/Ticket/" + msg[b]});
+    //let link = "https://techdefenders.repairq.io/Ticket/" + msg[b];
+    //chrome.tabs.update(win,{url: link});
     chrome.tabs.executeScript(win,{file: 'TicketToClaim.js'});
     console.log("ran TTC");
   }
@@ -55,7 +57,9 @@ chrome.tabs.onUpdated.addListener(function(tabId,changeInfo,tab){
     let win = chrome.tabs.create({url: "https://www.repairwatch.com/admin/view-client-shipments.php?autobatch"});
     newwin = true;
     chrome.tabs.executeScript(win,{file: 'batch.js'});
+
     console.log("background sent a message to batch.js");
+    counter = 0;
 //chrome.extension.sendMessage(ticketList,function(response) {});
 
   }

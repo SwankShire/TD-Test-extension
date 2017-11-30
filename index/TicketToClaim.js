@@ -15,8 +15,8 @@ getClaims = (response) => {
   let claim = info[1];
   let serialNum = info[2];
 
-  let claimNum = "claim" + info[1];
-
+  let claimNum = "claim" + info[1].innerHTML;
+  console.log(claimNum);
   chrome.extension.sendMessage(claimNum,function(response) {
 
 
